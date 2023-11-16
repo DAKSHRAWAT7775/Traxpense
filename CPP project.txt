@@ -1,0 +1,186 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+void push(Node*& head, int data) {
+    Node* newNode = new Node;
+    newNode->data = data;
+    newNode->next = head;
+    head = newNode;
+}
+
+int sum(Node* head) {
+    int total = 0;
+    while (head != nullptr) {
+        total += head->data;
+        head = head->next;
+    }
+    return total;
+}
+
+void total_budget_review(Node* total_expenses, Node* food, Node* cloth, Node* living, Node* transportation, Node* educ, Node* medical, int total_budget) {
+    cout << left << setw(12) << "Category" << setw(10) << "Expenses" << endl;
+    cout << left << setw(12) << "food" << setw(10) << sum(food) << endl;
+    cout << left << setw(12) << "cloth" << setw(10) << sum(cloth) << endl;
+    cout << left << setw(12) << "living" << setw(10) << sum(living) << endl;
+    cout << left << setw(12) << "transport" << setw(10) << sum(transportation) << endl;
+    cout << left << setw(12) << "educ" << setw(10) << sum(educ) << endl;
+    cout << left << setw(12) << "medical" << setw(10) << sum(medical) << endl;
+
+    int totalExpenses = sum(total_expenses);
+    int money_left = total_budget - totalExpenses;
+
+    cout << "Total Budget: " << total_budget << endl;
+    cout << "Total Expenses: " << totalExpenses << endl;
+    cout << "Money Left in Budget: " << money_left << endl;
+}
+
+
+void input_expense(Node*& total_expenses, Node*& food, Node*& cloth, Node*& living, Node*& transportation, Node*& educ, Node*& medical) {
+    int choice;
+    int spent;
+
+    cout << "Money spent On: " << endl;
+    cout << "1). Food\n2). Cloth\n3). Living\n4). Transportation\n5). Educ\n6). Medical\n7). Exit" << endl;
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    if (choice >= 1 && choice <= 6) {
+        cout << "Enter Amount Spent: ";
+        cin >> spent;
+        push(total_expenses, spent);
+
+        switch (choice) {
+        case 1:
+            push(food, spent);
+            break;
+        case 2:
+            push(cloth, spent);
+            break;
+        case 3:
+            push(living, spent);
+            break;
+        case 4:
+            push(transportation, spent);
+            break;
+        case 5:
+            push(educ, spent);
+            break;
+        case 6:
+            push(medical, spent);
+            break;
+        default:
+            cout << "Incorrect Input";
+            break;
+        }
+    } else if (choice != 7) {
+        cout << "Incorrect Input";
+    }
+}
+
+
+void update_total_budget(int& total_budget) {
+    int bud_choice;
+    int change;
+    int chk = 0;
+
+    cout << "1). Increase\n2). Decrease" << endl;
+    cin >> bud_choice;
+
+    cout << "Enter Amount: ";
+    cin >> change;
+
+    switch (bud_choice) {
+        case 1:
+            total_budget += change;
+            break;
+        case 2:
+            if (total_budget >= change) {
+                total_budget -= change;
+            } else {
+                chk += 1;
+            }
+            break;
+        default:
+            cout << "Incorrect Input" << endl;
+            return;
+    }
+
+    if (chk == 0) {
+        cout << "Change Successful\nNew Budget=" << total_budget << endl;
+    } else {
+        cout << "Invalid Input" << endl;
+    }
+}
+
+
+void delete_list(Node*& head) {
+    // Delete the linked list to free memory
+    while (head != nullptr) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+}
+
+int main() {
+    Node* total_expenses = nullptr;
+    Node* food = nullptr;
+    Node* living = nullptr;
+    Node* cloth = nullptr;
+    Node* transportation = nullptr;
+    Node* educ = nullptr;
+    Node* medical = nullptr;
+    int total_budget = 0;
+    int choice;
+    bool inf_loop = true;
+
+    if (total_budget == 0) {
+        cout << "Enter your Budget: ";
+        cin >> total_budget;
+    }
+
+    while (inf_loop) {
+        cout << "************************Budget Tracker************************" << endl;
+        cout << "1). Money Review" << endl;
+        cout << "2). Add expense" << endl;
+        cout << "3). Update Budget" << endl;
+        cout << "4). Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        switch (choice) {
+        case 1:
+            total_budget_review(total_expenses, food, cloth, living, transportation, educ, medical, total_budget);
+            break;
+        case 2:
+            input_expense(total_expenses, food, cloth, living, transportation, educ, medical);
+            break;
+        case 3:
+            update_total_budget(total_budget);
+            break;
+        case 4:
+            inf_loop = false;
+            break;
+        default:
+            cout << "Incorrect Input";
+            break;
+        }
+    }
+
+    // Free allocated memory
+    delete_list(total_expenses);
+    delete_list(food);
+    delete_list(living);
+    delete_list(cloth);
+    delete_list(transportation);
+    delete_list(educ);
+    delete_list(medical);
+
+    return 0;
+}
