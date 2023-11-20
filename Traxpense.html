@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traxpense - Your Budget Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Traxpense - Budget Tracker</h1>
+    </header>
+
+    <main>
+        <h2>Enter Your Budget</h2>
+        <form id="budgetForm">
+            <label for="totalBudget">Total Budget:</label>
+            <input type="number" id="totalBudget" placeholder="Enter your budget" required>
+
+            <button type="button" onclick="updateTotalBudget()">Update Budget</button>
+        </form>
+
+        <h2>Enter Your Expenses</h2>
+        <form id="expenseForm">
+            <label for="category">Category:</label>
+            <select id="category">
+                <option value="food">Food</option>
+                <option value="cloth">Cloth</option>
+                <option value="living">Living</option>
+                <option value="transportation">Transportation</option>
+                <option value="educ">Education</option>
+                <option value="medical">Medical</option>
+            </select>
+
+            <label for="expenseAmount">Amount Spent:</label>
+            <input type="number" id="expenseAmount" placeholder="Enter amount" required>
+
+            <button type="button" onclick="addExpense()">Add Expense</button>
+        </form>
+
+        <div class="result" id="result">
+            <h2>Budget Review</h2>
+            <p id="budgetReview">Waiting for input...</p>
+        </div>
+    </main>
+
+    <script>
+        var totalBudget = 0;
+        var totalExpenses = 0;
+        var categories = {
+            food: 0,
+            cloth: 0,
+            living: 0,
+            transportation: 0,
+            educ: 0,
+            medical: 0
+        };
+
+        function updateTotalBudget() {
+            totalBudget = parseFloat(document.getElementById('totalBudget').value) || 0;
+            alert('Total budget updated: $' + totalBudget);
+        }
+
+        function addExpense() {
+            var category = document.getElementById('category').value;
+            var expenseAmount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+
+            categories[category] += expenseAmount;
+            totalExpenses += expenseAmount;
+
+            document.getElementById('result').innerHTML = generateBudgetReview();
+        }
+
+        function generateBudgetReview() {
+            var review = '<strong>Budget Review</strong><br>';
+            review += 'Total Budget: $' + totalBudget + '<br>';
+            review += 'Total Expenses: $' + totalExpenses + '<br>';
+            review += '<br><strong>Category Expenses:</strong><br>';
+
+            for (var category in categories) {
+                review += category.charAt(0).toUpperCase() + category.slice(1) + ': $' + categories[category] + '<br>';
+            }
+
+            var moneyLeft = totalBudget - totalExpenses;
+            review += '<br><strong>Money Left in Budget:</strong> $' + moneyLeft;
+
+            return review;
+        }
+    </script>
+
+</body>
+</html>
